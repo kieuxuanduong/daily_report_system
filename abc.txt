@@ -1,25 +1,54 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:import url="/WEB-INF/views/layout/app.jsp">
-    <c:param name="content">
-        <c:if test="${hasError}">
-            <div id="flush_error">社員番号かパスワードが間違っています。</div>
-        </c:if>
-        <c:if test="${!hasError}">
-            <div id="flush_success">
-                <c:out value="${flush}"/>
-            </div>
-        </c:if>
-        <h2>ログイン</h2>
-        <form method="POST" action="<c:url value= '/login' />">
-            <label for="code">社員番号</label><br/>
-            <input type="text" name="code" value="${employee.code}"/>
-            <br/><br/>
-            <label for="password">パスワード</label>
-            <input type="password" name="password"/>
-             <br/><br/>
-            <input type="hidden" name="_token" value="${_token}"/>
-            <button type="submit">ログイン</button>
-        </form>
-    </c:param>
-</c:import>
+package controllers.reports;
+
+import java.io.IOException;
+
+import javax.persistence.EntityManager;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import models.Employee;
+import models.Report;
+import utils.DBUtil;
+
+/**
+ * Servlet implementation class ReportsEditServlet
+ */
+@WebServlet("/reports/edit")
+public class ReportsEditServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public ReportsEditServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        EntityManager em = DBUtil.createEntityManager();
+
+        Report r = em.find(Report.class, Integer.parseInt(request.getParameter("id")));
+
+        em.close();
+
+        Employee login_employee = (Employee)request.getSession().getAttribute("login_employee");
+
+        if(login_employee.getId() == r.getEmployee().getId()) {
+            request.setAttribute("report", r);
+            request.setAttribute("_token", request.getSession().getId());
+            request.getSession().setAttribute("report_id", r.getId());
+        }
+
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/reports/edit.jsp");
+        rd.forward(request, response);
+    }
+
+}
