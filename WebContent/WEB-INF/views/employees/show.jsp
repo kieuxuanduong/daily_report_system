@@ -7,7 +7,7 @@
         <c:choose>
             <c:when test="${employee != null}">
 
-                    <% request.setCharacterEncoding("UTF-8"); %>
+                 //   <% request.setCharacterEncoding("UTF-8"); %>
 
                     <h2>id: ${employee.id} の従業員情報　詳細ページ</h2>
                     <table>
