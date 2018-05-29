@@ -18,7 +18,6 @@
 
     		        </form>
 
-	    		    <p><a href="${pageContext.request.contextPath}/index">一覧に戻る</a></p>
 	                <p><a href="#" onclick="confirmDestroy();">この従業員情報を削除します</a></p>
 	                <form method="POST" action="<c:url value= '/employees/destroy' />" >
 	                    <input type="hidden" name="_token" value="${_token}">
